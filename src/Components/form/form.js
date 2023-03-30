@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, forwardRef, useRef } from "react";
 
-function Form() {
-  const [id, setId] = useState("0");
-  const [price, setPrice] = useState("0");
+function Form(props, ref) {
+  const [id, setId] = useState("");
+  const [price, setPrice] = useState("");
   const [dishType, setDishType] = useState();
   const [tableNO, setTableNo] = useState("table-1");
 
@@ -19,8 +19,9 @@ function Form() {
     setTableNo(e.target.value);
   }
   function onSubmitHandler(ex) {
+    ex.preventDefault();
     let obj = {
-      key: id,
+      id: id,
       price: price,
       dishType: dishType,
       tableNO: tableNO,
@@ -28,22 +29,22 @@ function Form() {
     let Arr = JSON.parse(localStorage.getItem("data")) || [];
     Arr.push(obj);
     localStorage.setItem("data", JSON.stringify(Arr));
-
+    ref.current.fun();
     setId("");
     setDishType("");
-    setTableNo("");
+    setTableNo("table-1");
     setPrice("");
   }
   return (
     <form onSubmit={onSubmitHandler}>
       <label>Unique Order Id</label>
-      <input type="number" onChange={onIdHnadler} />
+      <input type="number" onChange={onIdHnadler} value={id} />
       <label>Choose Price</label>
-      <input type="number" onChange={onPriceHnadler} />
+      <input type="number" onChange={onPriceHnadler} value={price} />
       <label>Choose Dish</label>
-      <input type="text" onChange={onDishHnadler} />
+      <input type="text" onChange={onDishHnadler} value={dishType} />
       <label>Choose A Table</label>
-      <select onChange={onTableHnadler}>
+      <select onChange={onTableHnadler} value={tableNO}>
         <option value="table-1">Table 1</option>
         <option value="table-2">Table 2</option>
         <option value="table-3">Table 3</option>
@@ -52,4 +53,4 @@ function Form() {
     </form>
   );
 }
-export default Form;
+export default forwardRef(Form);
